@@ -14,21 +14,25 @@ def main() -> None:
     print(first)
 
     interval = max(busses)
+    found: set[int] = {interval}
 
-    start = (((100171379229052 // interval) + 1) * interval) - rawbusses.index(str(interval))
 
-    print(start)
+
     offsets = [(o, int(b)) for o, b in enumerate(rawbusses) if b != "x"]
-    for i in range(start, start * 10, interval):
+
+    i = (((100171379229052 // interval) + 1) * interval) - rawbusses.index(str(interval))
+    while True:
         fail = False
         for offset, bus in offsets:
             if (i + offset) % bus != 0:
                 fail = True
-                break
+            elif bus not in found:
+                interval *= bus
+                found.add(bus)
         if not fail:
             print(i)
-            exit()
-    print("No solution")
+            break
+        i += interval
 
 
 if __name__ == "__main__":

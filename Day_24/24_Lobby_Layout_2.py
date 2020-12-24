@@ -1,6 +1,5 @@
 import fileinput
 from collections import defaultdict, deque
-from functools import lru_cache
 
 
 tPoint = tuple[int, int]
@@ -42,10 +41,9 @@ def main() -> None:
 
         tiles = ntiles
         if (_ + 1) % 10 == 0:
-            print(f"Day {_+1}: {len([t for t in tiles.values() if t])}")
+            print(f"Day {_+1}: {len([True for t in tiles.values() if t])}")
 
 
-@lru_cache
 def neighbor(point: tPoint, d: str) -> tPoint:
     if d == "e":
         return point[0] + 2, point[1]
@@ -64,11 +62,22 @@ def neighbor(point: tPoint, d: str) -> tPoint:
 
 
 def all_neighbors(point) -> list[tPoint]:
-    return [neighbor(point, d) for d in ["e", "se", "sw", "w", "nw", "ne"]]
+    return [
+        neighbor(point, "e"),
+        neighbor(point, "se"),
+        neighbor(point, "sw"),
+        neighbor(point, "w"),
+        neighbor(point, "nw"),
+        neighbor(point, "ne"),
+    ]
 
 
 def countblackneighbors(tiles: defaultdict[tPoint, bool], point: tPoint) -> int:
-    return len([True for n in all_neighbors(point) if tiles[n]])
+    count = 0
+    for n in all_neighbors(point):
+        if tiles[n]:
+            count += 1
+    return count
 
 
 if __name__ == "__main__":
